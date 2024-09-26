@@ -133,6 +133,58 @@ h1 {
     justify-content: center;
 }
 
+/* Responsive Design for iPads and Smaller Screens */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .scoreboard {
+        flex-basis: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .game-content {
+        flex-basis: 100%;
+    }
+
+    .game-container {
+        grid-template-columns: repeat(3, 1fr); /* Adjusts to 3 columns */
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        grid-template-columns: repeat(2, 1fr); /* Adjusts to 2 columns */
+        gap: 10px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    #timer {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        width: 80px;
+        height: 80px;
+    }
+
+    .scoreboard {
+        padding: 15px;
+    }
+
+    #reset-scores-btn {
+        font-size: 0.9rem;
+    }
+}
+
+/* Card Styling */
 .card {
     width: 100px;
     height: 100px;
