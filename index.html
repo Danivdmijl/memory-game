@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="scoreboard">
+            <h2>Personal Best</h2>
+            <ul id="highscore-list"></ul>
+            <button id="reset-scores-btn" onclick="resetHighScores()">Reset Scores</button>
+        </div>
+
+        <div class="game-content">
+            <h1>Memory Game</h1>
+            <p id="timer">Time: 40:00:000</p>
+
+            <div id="game-message" style="display: none;">
+                <h2 id="game-result"></h2>
+                <button id="restart-btn" onclick="restartGame()">Restart Game</button>
+            </div>
+
+            <div class="game-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
