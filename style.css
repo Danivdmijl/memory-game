@@ -12,8 +12,9 @@ body {
 
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     max-width: 1200px;
     width: 100%;
 }
@@ -22,7 +23,6 @@ body {
     background-color: #333;
     padding: 20px;
     border-radius: 10px;
-    margin-right: 40px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
     flex-basis: 25%;
 }
@@ -128,7 +128,7 @@ h1 {
 
 .game-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* Default 4 columns */
     gap: 15px;
     justify-content: center;
 }
@@ -158,7 +158,7 @@ h1 {
 
 @media (max-width: 480px) {
     .game-container {
-        grid-template-columns: repeat(2, 1fr); /* Adjusts to 2 columns */
+        grid-template-columns: repeat(3, 1fr); /* Adjusts to 2 columns for phones */
         gap: 10px;
     }
 
@@ -170,9 +170,11 @@ h1 {
         font-size: 1.2rem;
     }
 
+    /* Dynamically adjust the card size for mobile screens */
     .card {
-        width: 80px;
-        height: 80px;
+        /* Based on viewport height (vh) and width (vw), to ensure no scrolling */
+        width: calc(45vw - 10px); /* A bit less than half the screen width, minus gap */
+        height: calc(22vh - 10px); /* Dynamic height based on viewport height */
     }
 
     .scoreboard {
