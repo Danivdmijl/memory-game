@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <audio id="flip-sound" src="/sounds/cardflip.wav"></audio>
+    <audio id="match-sound" src="sounds/correctpair.wav"></audio>
+    <audio id="win-sound" src="sounds/win.wav"></audio>
+    <audio id="lose-sound" src="sounds/lose.wav"></audio>
+    <audio id="background-music" src="sounds/background.mp3" loop></audio>
+
     <div class="container">
         <div class="scoreboard">
             <h2>Personal Best</h2>
@@ -16,6 +24,21 @@
 
         <div class="game-content">
             <h1>Memory Game</h1>
+            <div class="wrapper">
+                <button id="music-toggle-btn" onclick="toggleMusic()">Mute Music</button>
+                <div>
+                    <label for="theme-selector">Choose a Theme:</label>
+                    <select id="theme-selector" onchange="restartGame()">
+                        <option value="animals">Dieren</option>
+                        <option value="letters">Letters</option>
+                        <option value="fruits">Fruit</option>
+                        <option value="spaceobjects">Ruimte</option>
+                        <option value="sport">Sport</option>
+                        <option value="instruments">Instrumenten</option>
+                    </select>
+                </div>
+            </div>
+
             <p id="timer">Time: 40:00:000</p>
 
             <div id="game-message" style="display: none;">
@@ -27,6 +50,9 @@
         </div>
     </div>
 
+
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </body>
+
 </html>

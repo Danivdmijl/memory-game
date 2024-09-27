@@ -12,7 +12,7 @@ body {
 
 .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     max-width: 1200px;
@@ -25,6 +25,9 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
     flex-basis: 25%;
+    position: absolute;     
+    top: 159px;
+    left: 270px;
 }
 
 .scoreboard h2 {
@@ -89,6 +92,9 @@ li:hover {
 .game-content {
     flex-basis: 75%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    max-width: 30rem;
 }
 
 h1 {
@@ -142,6 +148,7 @@ h1 {
 
     .scoreboard {
         flex-basis: 100%;
+        position: static;
         margin-right: 0;
         margin-bottom: 20px;
     }
@@ -226,7 +233,9 @@ h1 {
 
 .card.flipped {
     transform: rotateY(180deg);
+    transition: transform 0.6s ease; /* Flip duration: 0.6 seconds */
 }
+
 
 .card.match .front {
     background-color: #32cd32;
@@ -239,11 +248,121 @@ h1 {
 }
 
 @keyframes winnerFade {
-    0% { background-color: yellow; }
-    50% { background-color: blue; }
-    100% { background-color: green; }
+    0% { background-color: rgb(30, 144, 255); transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+    25% { background-color: rgb(0, 123, 255); transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
+    50% { background-color: white; transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
+    75% { background-color: rgb(0, 104, 255); transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); }
+    100% { background-color: rgb(30, 144, 255); transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
 }
 
 .card.winner .front, .card.winner .back {
-    animation: winnerFade 1s ease-in-out infinite;
+    .card.winner .front, .card.winner .back {
+    animation: winnerFade 2s ease-in-out infinite; /* Continuous celebration effect */
 }
+
+}
+
+/* Theme-specific styling */
+body.theme-letters {
+    background-color: #1a1a1a; /* Dark background for letters */
+    color: white;
+}
+
+body.theme-animals {
+    background-color: #f0f8ff; /* Light blue background for animals */
+    color: black;
+}
+
+body.theme-fruits {
+    background-color: #fff0f5; /* Light pink background for fruits */
+    color: black;
+}
+
+/* Card styling for different themes */
+.theme-letters .card .front {
+    background-color: #1e90ff; /* Blue for letters */
+    color: white;
+}
+
+.theme-animals .card .front {
+    background-color: #ffcc00; /* Yellow for animals */
+    color: black;
+}
+
+.theme-fruits .card .front {
+    background-color: #ff6347; /* Tomato color for fruits */
+    color: white;
+}
+
+#theme-selector {
+    width: 200px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #1e90ff;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#theme-selector:hover {
+    background-color: #444;
+}
+
+#theme-selector:focus {
+    outline: none;
+    border-color: #0d6efd;
+}
+
+/* Optional: For mobile responsiveness */
+@media (max-width: 768px) {
+    #theme-selector {
+        width: 100%;
+    }
+}
+
+/* Simple and clean style for the Mute Music button */
+#music-toggle-btn {
+    width: 150px;
+    padding: 8px;
+    margin: 15px 0;
+    font-size: 1rem;
+    background-color: #1e90ff;  /* Light blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+#music-toggle-btn:hover {
+    background-color: #0d6efd;  /* Slightly darker blue on hover */
+}
+
+#music-toggle-btn:active {
+    background-color: #0b5ed7;  /* Darker blue when clicked */
+}
+
+.wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@keyframes shake {
+    0% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-5px); }
+    50% { transform: rotateY(180deg) translateX(5px); }
+    75% { transform: rotateY(180deg) translateX(-5px); }
+    100% { transform: rotateY(180deg) translateX(0); }
+}
+
+.card.shake {
+    transform: rotateY(180deg) translateX(0);
+    animation: shake 0.5s ease;
+}
+
