@@ -230,6 +230,11 @@ function showWinMessage() {
     gameMessage.style.display = 'block';
     gameResult.textContent = `Congratulations! You finished in ${elapsedTime.toFixed(3)} seconds!`;
 
+    // Stop background music
+    const backgroundMusic = document.getElementById('background-music');
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0; // Reset the music to the beginning
+
     // Play win sound
     const winSound = document.getElementById('win-sound');
     winSound.play();
@@ -254,6 +259,11 @@ function gameOver() {
     allCards.forEach(card => {
         card.classList.add('lost');
     });
+
+    // Stop background music
+    const backgroundMusic = document.getElementById('background-music');
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0; // Reset the music to the beginning
 
     // Play lose sound
     const loseSound = document.getElementById('lose-sound');

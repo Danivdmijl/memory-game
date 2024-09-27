@@ -8,6 +8,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
 }
 
 .container {
@@ -139,8 +140,27 @@ h1 {
     justify-content: center;
 }
 
+
+@media (max-width: 1340px){
+    .scoreboard {
+        left: 100px;
+    }
+}
+
+@media (max-width: 990px){
+    .scoreboard {
+        left: 10px;
+    }
+}
+
 /* Responsive Design for iPads and Smaller Screens */
 @media (max-width: 768px) {
+
+    body{
+        overflow: scroll;
+    }
+
+
     .container {
         flex-direction: column;
         align-items: center;
@@ -366,3 +386,23 @@ body.theme-fruits {
     animation: shake 0.5s ease;
 }
 
+.donate-button input[type="image"] {
+    width: auto;
+    height: auto;
+}
+
+.donate-button {
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    z-index: 1000; /* Ensures it stays above other elements */
+}
+
+@media (max-width: 575px) {
+    .donate-button {
+        position: absolute;
+        bottom: -80px;
+        right: 115px; /* Keeps it on the bottom-right even on smaller screens */
+        z-index: 1000;
+    }
+}
