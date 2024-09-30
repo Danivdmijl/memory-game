@@ -416,15 +416,6 @@ body.theme-fruits {
     text-align: center;
 }
 
-@media (max-width: 575px) {
-    .donate-button {
-        position: absolute;
-        bottom: -80px;
-        right: 115px; /* Keeps it on the bottom-right even on smaller screens */
-        z-index: 1000;
-    }
-}
-
 /* Modern and sleek style for the volume slider */
 #volume-slider {
     width: 200px;
