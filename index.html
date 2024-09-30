@@ -21,6 +21,15 @@
             <ul id="highscore-list"></ul>
             <button id="reset-scores-btn" onclick="resetHighScores()">Reset Scores</button>
             <button id="reset-themes-btn" onclick="resetThemes()" style="display: none;">Reset Themes</button>
+            <form action="https://www.paypal.me/Danivandermijl" method="post" target="_blank" class="donate-button">
+                <input type="hidden" name="business" value="Danivdmijl" />
+                <input type="hidden" name="no_recurring" value="0" />
+                <input type="hidden" name="item_name" value="Support the Development of this Game!" />
+                <input type="hidden" name="currency_code" value="USD" />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0"
+                    name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+            </form>    
         </div>
 
         <div class="game-content">
@@ -56,15 +65,6 @@
             <div class="game-container"></div>
         </div>
     </div>
-    <!-- <form action="https://www.paypal.me/Danivandermijl" method="post" target="_blank" class="donate-button">
-        <input type="hidden" name="business" value="Danivdmijl" />
-        <input type="hidden" name="no_recurring" value="0" />
-        <input type="hidden" name="item_name" value="Support the Development of this Game!" />
-        <input type="hidden" name="currency_code" value="USD" />
-        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0"
-            name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-        <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-    </form>     -->
 
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>

@@ -64,7 +64,6 @@ const themes = {
 let secretUnlocked = false;
 let swipeSequence = [];
 let tapCount = 0;
-let shakeCount = 0;
 
 let startX, startY, endX, endY;
 
@@ -125,26 +124,10 @@ document.addEventListener('click', function () {
     checkUnlockSequence();
 });
 
-if (window.DeviceMotionEvent) {
-    window.addEventListener('devicemotion', function (event) {
-        const acceleration = event.accelerationIncludingGravity;
-        const shakeThreshold = 15;
-
-        if (acceleration.x > shakeThreshold || acceleration.y > shakeThreshold || acceleration.z > shakeThreshold) {
-            shakeCount++;
-            checkUnlockSequence();
-        }
-    });
-}
-
-
-// Check unlock sequence
 function checkUnlockSequence() {
-    // Required sequence: 2 swipes up, 2 swipes down, 5 taps, and 2 shakes
     if (
         swipeSequence.join('') === 'upupdowndown' &&
-        tapCount === 5 &&
-        shakeCount === 2
+        tapCount === 5
     ) {
         unlockSecretTheme();
         resetUnlockInputs(); // Reset input sequence after unlocking
@@ -154,7 +137,6 @@ function checkUnlockSequence() {
 function resetUnlockInputs() {
     swipeSequence = [];
     tapCount = 0;
-    shakeCount = 0;
 }
 
 
@@ -184,25 +166,38 @@ function unlockSecretInMenu() {
     if (!document.querySelector('option[value="secret"]')) {
         const secretOption = document.createElement('option');
         secretOption.value = 'secret';
-        secretOption.textContent = 'Secret Theme 🦄';
+        secretOption.textContent = 'Secret theme: Mario';
         themeSelector.appendChild(secretOption);
 
         themes.secret = [
-            { name: '🦄', id: 1 }, { name: '🦄', id: 2 },
-            { name: '✨', id: 3 }, { name: '✨', id: 4 },
-            { name: '🌈', id: 5 }, { name: '🌈', id: 6 },
-            { name: '🌟', id: 7 }, { name: '🌟', id: 8 },
-            { name: '💫', id: 9 }, { name: '💫', id: 10 },
-            { name: '🌀', id: 11 }, { name: '🌀', id: 12 },
-            { name: '🎇', id: 13 }, { name: '🎇', id: 14 },
-            { name: '🌙', id: 15 }, { name: '🌙', id: 16 }
+            { name: '🦄', id: 1, img: 'images/bowser.png' },
+            { name: '🦄', id: 2, img: 'images/bowser.png' },
+            { name: '✨', id: 3, img: 'images/bowserjr.png' },
+            { name: '✨', id: 4, img: 'images/bowserjr.png' },
+            { name: '🌈', id: 5, img: 'images/mario.png' },
+            { name: '🌈', id: 6, img: 'images/mario.png' },
+            { name: '🌟', id: 7, img: 'images/vliegluigitoad.png' },
+            { name: '🌟', id: 8, img: 'images/vliegluigitoad.png' },,
+            { name: '💫', id: 9, img: 'images/vuurmario.png' },
+            { name: '💫', id: 10, img: 'images/vuurmario.png' },
+            { name: '🌀', id: 11, img: 'images/wario.png' },
+            { name: '🌀', id: 12, img: 'images/wario.png' },
+            { name: '🎇', id: 13, img: 'images/wiggler.png' },
+            { name: '🎇', id: 14, img: 'images/wiggler.png' },
+            { name: '🌙', id: 15, img: 'images/wolkguy.png' },
+            { name: '🌙', id: 16, img: 'images/wolkguy.png' },
         ];
+        
     }
 }
 
 function bigUnlockEffect() {
+    // Start playing the unlock sound at the same time the yellow background is applied
+    const unlockSound = new Audio('sounds/unlocked.wav');
+    unlockSound.play(); // Play the sound immediately
+    
     document.body.classList.add('shake');
-    document.body.style.backgroundColor = '#ffcc00'; // Flash to yellow
+    document.body.style.backgroundColor = '#ffcc00'; // Yellow effect
 
     setTimeout(() => {
         document.body.classList.remove('shake');
@@ -211,6 +206,7 @@ function bigUnlockEffect() {
 
     createGlowingParticles();
 }
+
 
 // Create glowing particles that float upwards
 function createGlowingParticles() {
@@ -252,14 +248,16 @@ function resetThemes() {
         // Hide the "Reset Themes" button after resetting themes
         document.getElementById('reset-themes-btn').style.display = 'none';
 
+        // Reset the secretUnlocked flag so that the theme can be unlocked again
+        secretUnlocked = false; // Reset the in-memory flag
+
         alert("All secret themes have been reset.");
     }
 }
 
-// Call this function on page load to check if the secret theme is already unlocked
+
 checkIfSecretThemeUnlocked();
 
-// Listen for the custom code (dxdth3best)
 document.addEventListener('keydown', checkCustomCode);
 
 
@@ -301,6 +299,7 @@ let lockBoard = false;
 function createBoard() {
     gameContainer.innerHTML = '';
     shuffleCards();
+    const selectedTheme = getSelectedTheme(); // Get the current theme
     shuffledCards.forEach(card => {
         const cardElement = document.createElement('div');
         cardElement.classList.add('card');
@@ -308,7 +307,19 @@ function createBoard() {
         
         const frontFace = document.createElement('div');
         frontFace.classList.add('front');
-        frontFace.textContent = card.name;
+
+        // Check if the current theme is 'secret'
+        if (selectedTheme === 'secret') {
+            // Render an image for the secret theme
+            const imgElement = document.createElement('img');
+            imgElement.src = card.img; // Use the 'img' path from the theme
+            imgElement.alt = card.name;
+            imgElement.classList.add('card-image'); // Add a class for styling
+            frontFace.appendChild(imgElement);
+        } else {
+            // Render text content (emoji) for other themes
+            frontFace.textContent = card.name;
+        }
 
         const backFace = document.createElement('div');
         backFace.classList.add('back');
@@ -322,6 +333,7 @@ function createBoard() {
         cardElement.addEventListener('click', flipCard);
     });
 }
+
 
 function startTimer() {
     startTime = Date.now();

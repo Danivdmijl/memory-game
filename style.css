@@ -412,10 +412,8 @@ body.theme-fruits {
 }
 
 .donate-button {
-    position: absolute;
-    bottom: 60px;
-    right: 20px;
-    z-index: 1000; /* Ensures it stays above other elements */
+    margin-top: 20px;
+    text-align: center;
 }
 
 @media (max-width: 575px) {
@@ -533,4 +531,10 @@ body.theme-fruits {
 .shake {
     animation: screenShake 1s; /* Shake duration 1 second */
     animation-timing-function: ease-in-out;
+}
+
+.card-image {
+    width: 80px; /* Adjust the size to fit the card */
+    height: 80px;
+    object-fit: contain; /* Ensure the image scales correctly */
 }
