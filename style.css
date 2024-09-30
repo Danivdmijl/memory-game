@@ -460,39 +460,16 @@ body.theme-fruits {
 #volume-slider:hover {
     background: linear-gradient(90deg, #1e90ff 0%, #32cd32 70%);
 }
-
-/* Glowing particles */
-.particle-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
-}
-
 .glowing-particle {
     position: absolute;
     bottom: 0;
     width: 10px;
     height: 10px;
-    background-color: rgba(255, 255, 255, 0.8); /* Subtle white glow */
+    background-color: rgba(255, 255, 255, 0.8); /* Default white */
     border-radius: 50%;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
     animation: rise 5s ease-in-out forwards, glow 1.5s infinite ease-in-out alternate;
     opacity: 0;
-}
-
-@keyframes rise {
-    0% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-150vh); /* Float upwards off the screen */
-        opacity: 0;
-    }
 }
 
 @keyframes glow {
@@ -502,6 +479,16 @@ body.theme-fruits {
     to {
         box-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.7);
     }
+}
+
+.particle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
 }
 
 /* Screen shake effect */

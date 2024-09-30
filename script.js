@@ -143,9 +143,9 @@ function resetUnlockInputs() {
 
 function unlockSecretTheme() {
     if (!secretUnlocked) {
-        alert("🎉 You’ve unlocked the Secret Theme! 🎉");
+        alert("You’ve unlocked the Secret Theme! 🎉");
 
-        const unlockSound = new Audio('sounds/unlocked.wav');
+        const unlockSound = new Audio('sounds/unlocked2.wav');
         unlockSound.play();
 
         bigUnlockEffect();
@@ -192,23 +192,26 @@ function unlockSecretInMenu() {
 }
 
 function bigUnlockEffect() {
-    // Start playing the unlock sound at the same time the yellow background is applied
+    // Start playing the unlock sound at the same time the green and red background is applied
     const unlockSound = new Audio('sounds/unlocked.wav');
     unlockSound.play(); // Play the sound immediately
     
     document.body.classList.add('shake');
-    document.body.style.backgroundColor = '#ffcc00'; // Yellow effect
+    
+    // Cycle through Mario and Luigi's colors
+    document.body.style.backgroundColor = 'green'; // Luigi's effect
+    setTimeout(() => {
+        document.body.style.backgroundColor = 'red'; // Mario's effect
+    }, 500);
 
     setTimeout(() => {
         document.body.classList.remove('shake');
         document.body.style.backgroundColor = ''; 
     }, 1000);
 
-    createGlowingParticles();
+    createGlowingParticles(); // Call particle effect with modified colors
 }
 
-
-// Create glowing particles that float upwards
 function createGlowingParticles() {
     const numParticles = 50;
     const container = document.createElement('div');
@@ -225,6 +228,11 @@ function createGlowingParticles() {
         particle.style.left = `${randomX}px`;
         particle.style.animationDelay = `${randomDelay}s`;
 
+        // Add a random color between red (Mario) and green (Luigi)
+        const colors = ['#ff0000', '#00ff00', '#ffffff']; // Red, Green, White (for stars)
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.backgroundColor = randomColor;
+
         setTimeout(() => {
             particle.remove();
         }, 5000); // Particles will exist for 5 seconds
@@ -234,6 +242,7 @@ function createGlowingParticles() {
         container.remove();
     }, 6000); // Container stays for a bit longer
 }
+
 
 // Reset all unlocked themes by clearing localStorage and refreshing the theme selector
 function resetThemes() {
