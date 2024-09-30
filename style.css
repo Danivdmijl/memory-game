@@ -491,6 +491,50 @@ body.theme-fruits {
     z-index: 1000;
 }
 
+/* Keyframes for pulsing and zooming */
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(255, 255, 255, 1);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        transform: scale(1);
+    }
+}
+
+@keyframes zoomShake {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    10%, 90% {
+        transform: translate(-5px, 5px) scale(1.05);
+    }
+    20%, 80% {
+        transform: translate(5px, -5px) scale(1.05);
+    }
+    30%, 70% {
+        transform: translate(-10px, 10px) scale(1.05);
+    }
+    40%, 60% {
+        transform: translate(10px, -10px) scale(1.05);
+    }
+    50% {
+        transform: translate(0, 0) scale(1.1);
+    }
+}
+
+/* Exciting special effect class */
+.exciting-effect {
+    animation: pulseGlow 7s infinite, zoomShake 7s ease-in-out; /* Combine glow pulse and zoom/shake */
+    background-color: green; /* Start with Luigi's color */
+}
+
+
 /* Screen shake effect */
 @keyframes screenShake {
     0% { transform: translate(2px, 1px) rotate(0deg); }

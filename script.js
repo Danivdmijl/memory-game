@@ -192,25 +192,40 @@ function unlockSecretInMenu() {
 }
 
 function bigUnlockEffect() {
-    // Start playing the unlock sound at the same time the green and red background is applied
-    const unlockSound = new Audio('sounds/unlocked.wav');
-    unlockSound.play(); // Play the sound immediately
-    
-    document.body.classList.add('shake');
-    
-    // Cycle through Mario and Luigi's colors
-    document.body.style.backgroundColor = 'green'; // Luigi's effect
-    setTimeout(() => {
-        document.body.style.backgroundColor = 'red'; // Mario's effect
-    }, 500);
+    // Play the unlock sound for secret theme
+    const unlockSound = new Audio('sounds/unlocked2.wav');
+    unlockSound.play();
 
-    setTimeout(() => {
-        document.body.classList.remove('shake');
-        document.body.style.backgroundColor = ''; 
-    }, 1000);
+    // Add the special effects for 7 seconds
+    document.body.classList.add('exciting-effect'); // Add the new exciting effect class
 
-    createGlowingParticles(); // Call particle effect with modified colors
+    // Flashing colors for Mario and Luigi alternating colors
+    let flashInterval = setInterval(() => {
+        document.body.style.backgroundColor = document.body.style.backgroundColor === 'green' ? 'red' : 'green';
+    }, 500); // Switch colors every 0.5 seconds
+
+    // Confetti explosion at the start
+    confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#ff0000', '#00ff00', '#ffffff'] // Mario, Luigi, and star colors
+    });
+
+    // Create glowing particles in the background
+    createGlowingParticles(); 
+
+    // Stop the effect after 7 seconds
+    setTimeout(() => {
+        clearInterval(flashInterval); // Stop color flashing
+        document.body.classList.remove('exciting-effect'); // Remove the exciting effect class
+        document.body.style.backgroundColor = ''; // Reset the background color
+    }, 7000); // 7 seconds duration
 }
+
+
+
+
 
 function createGlowingParticles() {
     const numParticles = 50;
@@ -244,7 +259,6 @@ function createGlowingParticles() {
 }
 
 
-// Reset all unlocked themes by clearing localStorage and refreshing the theme selector
 function resetThemes() {
     if (confirm("Are you sure you want to reset unlocked themes?")) {
         // Remove the unlocked theme status from localStorage
@@ -258,19 +272,18 @@ function resetThemes() {
         document.getElementById('reset-themes-btn').style.display = 'none';
 
         // Reset the secretUnlocked flag so that the theme can be unlocked again
-        secretUnlocked = false; // Reset the in-memory flag
+        secretUnlocked = false;  // Reset the in-memory flag
 
-        alert("All secret themes have been reset.");
+        // Reset inputs for unlocking (e.g., swipe, taps)
+        resetUnlockInputs();  // Clear the swipe and tap inputs
+
+        alert("All secret themes have been reset. You can unlock them again.");
     }
 }
-
 
 checkIfSecretThemeUnlocked();
 
 document.addEventListener('keydown', checkCustomCode);
-
-
-
 
 function getSelectedTheme() {
     const themeSelector = document.getElementById('theme-selector');
@@ -566,6 +579,33 @@ function resetHighScores() {
         renderHighScores();
     }
 }
+
+// Get all audio elements
+const sounds = [
+    document.getElementById('flip-sound'),
+    document.getElementById('match-sound'),
+    document.getElementById('win-sound'),
+    document.getElementById('lose-sound'),
+    document.getElementById('background-music')
+];
+
+// Get the volume slider
+const volumeSlider = document.getElementById('volume-slider');
+
+// Function to update the volume of all sounds
+function updateVolume() {
+    const volume = volumeSlider.value / 100; // Slider value is between 0 and 100, convert to 0.0 - 1.0
+    sounds.forEach(sound => {
+        sound.volume = volume; // Set the volume for each sound element
+    });
+}
+
+// Add an event listener to the volume slider to update the volume on input change
+volumeSlider.addEventListener('input', updateVolume);
+
+// Set the initial volume for all sounds based on the initial slider value
+updateVolume();
+
 
 function startBackgroundMusic() {
     const backgroundMusic = document.getElementById('background-music');
