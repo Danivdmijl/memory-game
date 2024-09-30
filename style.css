@@ -8,7 +8,6 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
 }
 
 .container {
@@ -528,11 +527,67 @@ body.theme-fruits {
     }
 }
 
+.pokemon-effect {
+    animation: pulseGlow 7s infinite, zoomShake 7s ease-in-out; /* Combine glow pulse and zoom/shake */
+    background-color: yellow; /* Start with Pikachu's color */
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 20px rgba(255, 235, 59, 0.5); transform: scale(1); }
+    50% { box-shadow: 0 0 60px rgba(255, 235, 59, 1); transform: scale(1.05); }
+    100% { box-shadow: 0 0 20px rgba(255, 235, 59, 0.5); transform: scale(1); }
+}
+
+@keyframes zoomShake {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    10%, 90% { transform: translate(-5px, 5px) scale(1.05); }
+    20%, 80% { transform: translate(5px, -5px) scale(1.05); }
+    30%, 70% { transform: translate(-10px, 10px) scale(1.05); }
+    40%, 60% { transform: translate(10px, -10px) scale(1.05); }
+    50% { transform: translate(0, 0) scale(1.1); }
+}
+
+.glowing-particle {
+    position: absolute;
+    bottom: 0;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Default white */
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
+    animation: rise 5s ease-in-out forwards, glow 1.5s infinite ease-in-out alternate;
+    opacity: 0;
+}
+
+
 /* Exciting special effect class */
 .exciting-effect {
     animation: pulseGlow 7s infinite, zoomShake 7s ease-in-out; /* Combine glow pulse and zoom/shake */
     background-color: green; /* Start with Luigi's color */
 }
+
+.mario-effect {
+    animation: pulseGlowMario 7s infinite, zoomShake 7s ease-in-out; /* Combine pulse glow and shake */
+    background-color: green; /* Start with Luigi's color */
+}
+
+@keyframes pulseGlowMario {
+    0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); transform: scale(1); }
+    50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); transform: scale(1.05); }
+    100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); transform: scale(1); }
+}
+
+.pokemon-effect {
+    animation: pulseGlowPokemon 7s infinite, zoomShake 7s ease-in-out;
+    background-color: yellow; /* Electric color (Pikachu) */
+}
+
+@keyframes pulseGlowPokemon {
+    0% { box-shadow: 0 0 20px rgba(255, 235, 59, 0.5); transform: scale(1); }
+    50% { box-shadow: 0 0 60px rgba(255, 165, 0, 1); transform: scale(1.05); }
+    100% { box-shadow: 0 0 20px rgba(0, 183, 255, 0.5); transform: scale(1); }
+}
+
 
 
 /* Screen shake effect */

@@ -58,6 +58,42 @@ const themes = {
         { name: '🎺', id: 11 }, { name: '🎺', id: 12 },
         { name: '🪕', id: 13 }, { name: '🪕', id: 14 },
         { name: '🎤', id: 15 }, { name: '🎤', id: 16 }
+    ],
+    secret: [
+        { name: '🦄', id: 1, img: 'images/bowser.png' },
+        { name: '🦄', id: 2, img: 'images/bowser.png' },
+        { name: '✨', id: 3, img: 'images/bowserjr.png' },
+        { name: '✨', id: 4, img: 'images/bowserjr.png' },
+        { name: '🌈', id: 5, img: 'images/mario.png' },
+        { name: '🌈', id: 6, img: 'images/mario.png' },
+        { name: '🌟', id: 7, img: 'images/vliegluigitoad.png' },
+        { name: '🌟', id: 8, img: 'images/vliegluigitoad.png' },
+        { name: '💫', id: 9, img: 'images/vuurmario.png' },
+        { name: '💫', id: 10, img: 'images/vuurmario.png' },
+        { name: '🌀', id: 11, img: 'images/wario.png' },
+        { name: '🌀', id: 12, img: 'images/wario.png' },
+        { name: '🎇', id: 13, img: 'images/wiggler.png' },
+        { name: '🎇', id: 14, img: 'images/wiggler.png' },
+        { name: '🌙', id: 15, img: 'images/wolkguy.png' },
+        { name: '🌙', id: 16, img: 'images/wolkguy.png' },
+    ],
+    pokemon: [
+        { name: '⚡', id: 1, img: 'images/pikachu.png' },
+        { name: '⚡', id: 2, img: 'images/pikachu.png' },
+        { name: '🔥', id: 3, img: 'images/charizard.png' },
+        { name: '🔥', id: 4, img: 'images/charizard.png' },
+        { name: '💧', id: 5, img: 'images/squirtle.png' },
+        { name: '💧', id: 6, img: 'images/squirtle.png' },
+        { name: '🌱', id: 7, img: 'images/bulbasaur.png' },
+        { name: '🌱', id: 8, img: 'images/bulbasaur.png' },
+        { name: '💫', id: 9, img: 'images/mewtwo.png' },
+        { name: '💫', id: 10, img: 'images/mewtwo.png' },
+        { name: '🌀', id: 11, img: 'images/gengar.png' },
+        { name: '🌀', id: 12, img: 'images/gengar.png' },
+        { name: '🎇', id: 13, img: 'images/jigglypuff.png' },
+        { name: '🎇', id: 14, img: 'images/jigglypuff.png' },
+        { name: '🌕', id: 15, img: 'images/snorlax.png' },
+        { name: '🌕', id: 16, img: 'images/snorlax.png' },
     ]
 };
 
@@ -67,9 +103,11 @@ let tapCount = 0;
 
 let startX, startY, endX, endY;
 
-
-const customCode = [68, 88, 68, 84, 72, 51, 66, 69, 83, 84];
+const customCode = [68, 88, 68, 84, 72, 51, 66, 69, 83, 84]; // "DXDTH3BEST"
 let customCodeIndex = 0;
+
+const pokemonCode = [80, 79, 75, 69, 77, 79, 78]; // "POKEMON"
+let pokemonCodeIndex = 0;
 
 function checkIfSecretThemeUnlocked() {
     const resetThemesBtn = document.getElementById('reset-themes-btn');
@@ -79,6 +117,11 @@ function checkIfSecretThemeUnlocked() {
         resetThemesBtn.style.display = 'block';
     } else {
         resetThemesBtn.style.display = 'none';
+    }
+
+    if (localStorage.getItem('pokemonThemeUnlocked') === 'true') {
+        unlockPokemonInMenu();
+        resetThemesBtn.style.display = 'block';
     }
 }
 
@@ -91,6 +134,18 @@ function checkCustomCode(e) {
         }
     } else {
         customCodeIndex = 0; 
+    }
+}
+
+function checkPokemonCode(e) {
+    if (e.keyCode === pokemonCode[pokemonCodeIndex]) {
+        pokemonCodeIndex++;
+        if (pokemonCodeIndex === pokemonCode.length) {
+            unlockPokemonTheme();
+            pokemonCodeIndex = 0; // Reset after unlocking
+        }
+    } else {
+        pokemonCodeIndex = 0; // Reset if wrong key is pressed
     }
 }
 
@@ -125,12 +180,16 @@ document.addEventListener('click', function () {
 });
 
 function checkUnlockSequence() {
-    if (
-        swipeSequence.join('') === 'upupdowndown' &&
-        tapCount === 5
-    ) {
+    // Check for Mario unlock (existing functionality)
+    if (swipeSequence.join('') === 'upupdowndown' && tapCount === 5) {
         unlockSecretTheme();
         resetUnlockInputs(); // Reset input sequence after unlocking
+    }
+
+    // Check for Pokémon unlock (new functionality)
+    if (swipeSequence.join('') === 'updownupdown' && tapCount === 5) {
+        unlockPokemonTheme(); // Unlock the Pokémon theme
+        resetUnlockInputs(); // Reset the input sequence after unlocking
     }
 }
 
@@ -143,12 +202,13 @@ function resetUnlockInputs() {
 
 function unlockSecretTheme() {
     if (!secretUnlocked) {
-        alert("You’ve unlocked the Secret Theme! 🎉");
+        alert("You’ve unlocked the Secret Mario Theme! 🎉");
 
         const unlockSound = new Audio('sounds/unlocked2.wav');
         unlockSound.play();
 
-        bigUnlockEffect();
+        // Add Mario theme-specific effect with red/green colors
+        marioUnlockEffect();
 
         localStorage.setItem('secretThemeUnlocked', 'true');
 
@@ -160,6 +220,66 @@ function unlockSecretTheme() {
     }
 }
 
+function marioUnlockEffect() {
+    document.body.classList.add('mario-effect'); // Add the new Mario effect class
+
+    // Hide overflow to prevent scrolling
+    document.body.style.overflow = 'hidden';
+
+    let flashInterval = setInterval(() => {
+        document.body.style.backgroundColor = document.body.style.backgroundColor === 'green' ? 'red' : 'green';
+    }, 500); // Switch colors every 0.5 seconds
+
+    createGlowingParticles(['#ff0000', '#00ff00']); // Red and Green for Mario and Luigi
+
+    // Stop the effect after 7 seconds
+    setTimeout(() => {
+        clearInterval(flashInterval);
+        document.body.classList.remove('mario-effect');
+        document.body.style.backgroundColor = ''; // Reset the background color
+        document.body.style.overflow = ''; // Restore overflow
+    }, 7000);
+}
+
+
+function unlockPokemonTheme() {
+    if (!localStorage.getItem('pokemonThemeUnlocked')) {
+        alert("You’ve unlocked the Secret Pokémon Theme! 🎉");
+
+        const unlockSound = new Audio('sounds/unlocked2.wav');
+        unlockSound.play();
+
+        pokemonUnlockEffect();
+
+        localStorage.setItem('pokemonThemeUnlocked', 'true');
+
+        unlockPokemonInMenu();
+
+        document.getElementById('reset-themes-btn').style.display = 'block';
+    }
+}
+
+function pokemonUnlockEffect() {
+    document.body.classList.add('pokemon-effect');
+
+    // Hide overflow to prevent scrolling
+    document.body.style.overflow = 'hidden';
+
+    let flashInterval = setInterval(() => {
+        document.body.style.backgroundColor = document.body.style.backgroundColor === 'yellow' ? '#1a1a1a' : 'yellow';
+    }, 400); // Switch colors every 0.4 seconds
+
+    createGlowingParticles(['#ffeb3b', '#f57c00', '#29b6f6']); // Yellow, orange, blue for electric, fire, water
+
+    setTimeout(() => {
+        clearInterval(flashInterval);
+        document.body.classList.remove('pokemon-effect');
+        document.body.style.backgroundColor = ''; // Reset background color
+        document.body.style.overflow = ''; // Restore overflow
+    }, 7000);
+}
+
+
 function unlockSecretInMenu() {
     const themeSelector = document.getElementById('theme-selector');
 
@@ -168,66 +288,46 @@ function unlockSecretInMenu() {
         secretOption.value = 'secret';
         secretOption.textContent = 'Secret theme: Mario';
         themeSelector.appendChild(secretOption);
+    }
+}
 
-        themes.secret = [
-            { name: '🦄', id: 1, img: 'images/bowser.png' },
-            { name: '🦄', id: 2, img: 'images/bowser.png' },
-            { name: '✨', id: 3, img: 'images/bowserjr.png' },
-            { name: '✨', id: 4, img: 'images/bowserjr.png' },
-            { name: '🌈', id: 5, img: 'images/mario.png' },
-            { name: '🌈', id: 6, img: 'images/mario.png' },
-            { name: '🌟', id: 7, img: 'images/vliegluigitoad.png' },
-            { name: '🌟', id: 8, img: 'images/vliegluigitoad.png' },,
-            { name: '💫', id: 9, img: 'images/vuurmario.png' },
-            { name: '💫', id: 10, img: 'images/vuurmario.png' },
-            { name: '🌀', id: 11, img: 'images/wario.png' },
-            { name: '🌀', id: 12, img: 'images/wario.png' },
-            { name: '🎇', id: 13, img: 'images/wiggler.png' },
-            { name: '🎇', id: 14, img: 'images/wiggler.png' },
-            { name: '🌙', id: 15, img: 'images/wolkguy.png' },
-            { name: '🌙', id: 16, img: 'images/wolkguy.png' },
-        ];
-        
+function unlockPokemonInMenu() {
+    const themeSelector = document.getElementById('theme-selector');
+
+    if (!document.querySelector('option[value="pokemon"]')) {
+        const pokemonOption = document.createElement('option');
+        pokemonOption.value = 'pokemon';
+        pokemonOption.textContent = 'Secret theme: Pokemon';
+        themeSelector.appendChild(pokemonOption);
     }
 }
 
 function bigUnlockEffect() {
-    // Play the unlock sound for secret theme
+    // Play the unlock sound for Pokémon theme
     const unlockSound = new Audio('sounds/unlocked2.wav');
     unlockSound.play();
 
     // Add the special effects for 7 seconds
-    document.body.classList.add('exciting-effect'); // Add the new exciting effect class
+    document.body.classList.add('pokemon-effect'); // Add the new exciting Pokémon effect class
 
-    // Flashing colors for Mario and Luigi alternating colors
+    // Flashing background colors like electric shocks for Pikachu
     let flashInterval = setInterval(() => {
-        document.body.style.backgroundColor = document.body.style.backgroundColor === 'green' ? 'red' : 'green';
-    }, 500); // Switch colors every 0.5 seconds
+        document.body.style.backgroundColor = document.body.style.backgroundColor === 'yellow' ? '#1a1a1a' : 'yellow';
+    }, 400); // Switch colors every 0.4 seconds
 
-    // Confetti explosion at the start
-    confetti({
-        particleCount: 200,
-        spread: 100,
-        origin: { y: 0.6 },
-        colors: ['#ff0000', '#00ff00', '#ffffff'] // Mario, Luigi, and star colors
-    });
-
-    // Create glowing particles in the background
-    createGlowingParticles(); 
+    // Create glowing particles that resemble electric sparks
+    createGlowingParticles(['#ffeb3b', '#f57c00', '#29b6f6']); // Yellow, orange, blue for electric, fire, and water Pokémon
 
     // Stop the effect after 7 seconds
     setTimeout(() => {
         clearInterval(flashInterval); // Stop color flashing
-        document.body.classList.remove('exciting-effect'); // Remove the exciting effect class
+        document.body.classList.remove('pokemon-effect'); // Remove the exciting effect class
         document.body.style.backgroundColor = ''; // Reset the background color
     }, 7000); // 7 seconds duration
 }
 
 
-
-
-
-function createGlowingParticles() {
+function createGlowingParticles(colors = ['#ffeb3b', '#f57c00', '#29b6f6']) {
     const numParticles = 50;
     const container = document.createElement('div');
     container.classList.add('particle-container');
@@ -243,8 +343,7 @@ function createGlowingParticles() {
         particle.style.left = `${randomX}px`;
         particle.style.animationDelay = `${randomDelay}s`;
 
-        // Add a random color between red (Mario) and green (Luigi)
-        const colors = ['#ff0000', '#00ff00', '#ffffff']; // Red, Green, White (for stars)
+        // Add random Pokémon theme colors (electric, fire, water)
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         particle.style.backgroundColor = randomColor;
 
@@ -259,31 +358,36 @@ function createGlowingParticles() {
 }
 
 
+
 function resetThemes() {
     if (confirm("Are you sure you want to reset unlocked themes?")) {
         // Remove the unlocked theme status from localStorage
         localStorage.removeItem('secretThemeUnlocked');
+        localStorage.removeItem('pokemonThemeUnlocked'); // Add this for Pokemon
 
-        // Remove the secret theme from the theme selector
+        // Remove the secret themes from the theme selector
         const secretOption = document.querySelector('option[value="secret"]');
         if (secretOption) secretOption.remove();
+
+        const pokemonOption = document.querySelector('option[value="pokemon"]'); // Add this for Pokemon
+        if (pokemonOption) pokemonOption.remove();
 
         // Hide the "Reset Themes" button after resetting themes
         document.getElementById('reset-themes-btn').style.display = 'none';
 
-        // Reset the secretUnlocked flag so that the theme can be unlocked again
-        secretUnlocked = false;  // Reset the in-memory flag
+        // Reset flags
+        secretUnlocked = false;
 
-        // Reset inputs for unlocking (e.g., swipe, taps)
-        resetUnlockInputs();  // Clear the swipe and tap inputs
+        resetUnlockInputs();
 
         alert("All secret themes have been reset. You can unlock them again.");
     }
 }
 
-checkIfSecretThemeUnlocked();
-
 document.addEventListener('keydown', checkCustomCode);
+document.addEventListener('keydown', checkPokemonCode);
+
+checkIfSecretThemeUnlocked();
 
 function getSelectedTheme() {
     const themeSelector = document.getElementById('theme-selector');
@@ -331,8 +435,8 @@ function createBoard() {
         frontFace.classList.add('front');
 
         // Check if the current theme is 'secret'
-        if (selectedTheme === 'secret') {
-            // Render an image for the secret theme
+        if (selectedTheme === 'secret' || selectedTheme === 'pokemon') {
+            // Render an image for the secret or Pokémon theme
             const imgElement = document.createElement('img');
             imgElement.src = card.img; // Use the 'img' path from the theme
             imgElement.alt = card.name;
