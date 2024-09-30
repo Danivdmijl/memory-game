@@ -20,13 +20,18 @@
             <h2>Personal Best</h2>
             <ul id="highscore-list"></ul>
             <button id="reset-scores-btn" onclick="resetHighScores()">Reset Scores</button>
+            <button id="reset-themes-btn" onclick="resetThemes()" style="display: none;">Reset Themes</button>
         </div>
 
         <div class="game-content">
             <h1>Memory Game</h1>
             <div class="wrapper">
-                
-                <button id="music-toggle-btn" onclick="toggleMusic()">Mute Music</button>
+                <button id="music-toggle-btn" onclick="toggleMusic()">Mute Music</button>            
+                <div>
+                    <label for="volume-slider">Volume Control:</label>
+                    <input type="range" id="volume-slider" min="0" max="100" value="10">
+                </div>
+            
                 <div>
                     <label for="theme-selector">Choose a Theme:</label>
                     <select id="theme-selector" onchange="restartGame()">
@@ -39,6 +44,7 @@
                     </select>
                 </div>
             </div>
+            
 
             <p id="timer">Time: 40:00:000</p>
 
