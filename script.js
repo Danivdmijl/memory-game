@@ -121,9 +121,19 @@ async function fetchGlobalLeaderboard() {
         const globalLeaderboardList = document.getElementById('global-leaderboard-list');
         globalLeaderboardList.innerHTML = '';  // Clear the existing list
 
-        leaderboard.slice(0, 3).forEach(entry => {  // Show top 3 scores
+        leaderboard.slice(0, 3).forEach((entry, index) => {  // Show top 3 scores
             const listItem = document.createElement('li');
             listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s`;
+
+            // Apply the appropriate class for the top 3
+            if (index === 0) {
+                listItem.classList.add('diamond');  // First place
+            } else if (index === 1) {
+                listItem.classList.add('gold');     // Second place
+            } else if (index === 2) {
+                listItem.classList.add('silver');   // Third place
+            }
+
             globalLeaderboardList.appendChild(listItem);
         });
     } catch (error) {
@@ -131,10 +141,16 @@ async function fetchGlobalLeaderboard() {
     }
 }
 
+
 // Function to add a new score to the global leaderboard and update JSONBin
 async function addNewGlobalScore(playerName, time) {
     try {
-        // First, get the current global leaderboard
+        // First, ensure playerName is valid (max 13 characters)
+        if (playerName.length > 13) {
+            playerName = playerName.substring(0, 13); // Trim the name to 13 characters
+        }
+
+        // Get the current global leaderboard
         const response = await fetch(apiUrl, {
             method: "GET",
             headers: {
@@ -147,6 +163,9 @@ async function addNewGlobalScore(playerName, time) {
         // Add the new score to the leaderboard
         leaderboard.push({ playerName, time });
 
+        // Filter out any existing entries with player names longer than 13 characters
+        const filteredLeaderboard = leaderboard.filter(entry => entry.playerName.length <= 13);
+
         // Send the updated leaderboard back to JSONBin
         await fetch(apiUrl, {
             method: "PUT",
@@ -154,7 +173,7 @@ async function addNewGlobalScore(playerName, time) {
                 "Content-Type": "application/json",
                 "X-Master-Key": apiKey
             },
-            body: JSON.stringify({ leaderboard })
+            body: JSON.stringify({ leaderboard: filteredLeaderboard })
         });
 
         // Fetch and display the updated global leaderboard
@@ -164,6 +183,7 @@ async function addNewGlobalScore(playerName, time) {
     }
 }
 
+
 // Call fetchGlobalLeaderboard when the page loads to display the leaderboard
 fetchGlobalLeaderboard();
 
@@ -171,6 +191,42 @@ fetchGlobalLeaderboard();
 function onGameFinish(playerName, time) {
     addNewGlobalScore(playerName, time);  // Update the global leaderboard
 }
+
+// Function to clean up the leaderboard by removing long usernames
+async function cleanUpLeaderboard() {
+    try {
+        // Fetch the current global leaderboard from JSONBin
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "X-Master-Key": apiKey
+            }
+        });
+        const data = await response.json();
+        const leaderboard = data.record.leaderboard;
+
+        // Filter out entries with usernames longer than 13 characters
+        const filteredLeaderboard = leaderboard.filter(entry => entry.playerName.length <= 13);
+
+        // Send the cleaned leaderboard back to JSONBin
+        await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": apiKey
+            },
+            body: JSON.stringify({ leaderboard: filteredLeaderboard })
+        });
+
+        console.log('Leaderboard cleaned. Long usernames removed.');
+    } catch (error) {
+        console.error('Error cleaning leaderboard:', error);
+    }
+}
+
+// Call this function to clean the leaderboard
+cleanUpLeaderboard();
+
 
 
 let secretUnlocked = false;
@@ -644,7 +700,14 @@ function showWinMessage() {
     const elapsedTime = (Date.now() - startTime) / 1000;
 
     // Add to global leaderboard
-    const playerName = prompt("Enter your name:");  // Ask for player's name (or customize this)
+    let playerName = prompt("Enter your name (max 13 characters):");
+    
+    // Validate the player name length
+    if (playerName.length > 13) {
+        alert("Name is too long! It will be trimmed to 13 characters.");
+        playerName = playerName.substring(0, 13);  // Trim to 13 characters
+    }
+
     onGameFinish(playerName, elapsedTime);
 
     gameMessage.style.display = 'block';
@@ -671,9 +734,9 @@ function showWinMessage() {
         card.classList.add('winner');  // Ensure the 'winner' class is added
     });
 
-
     saveHighScore(elapsedTime);  // Save the time after the game ends
 }
+
 
 function gameOver() {
     const allCards = document.querySelectorAll('.card');

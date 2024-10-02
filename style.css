@@ -52,20 +52,29 @@ li {
     transition: transform 0.3s ease;
 }
 
+/* Diamond theme for first place */
+li.diamond {
+    background-color: #b9f2ff; /* Light blue diamond color */
+    color: #1e1e1e; /* Darker text for contrast */
+    border: 2px solid #b9f2ff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(185, 242, 255, 0.8);
+}
+
+/* Gold theme for second place */
 li.gold {
     background-color: gold;
     color: black;
+    font-weight: bold;
 }
 
+/* Silver theme for third place */
 li.silver {
     background-color: silver;
     color: black;
+    font-weight: bold;
 }
 
-li.bronze {
-    background-color: #cd7f32;
-    color: black;
-}
 
 li:hover {
     transform: scale(1.05);
@@ -160,20 +169,20 @@ h1 {
 }
 
 
-@media (max-width: 1340px){
+@media (max-width: 1643px){
     .scoreboard {
         left: 100px;
     }
 }
 
-@media (max-width: 990px){
+@media (max-width: 1295px){
     .scoreboard {
         left: 10px;
     }
 }
 
 /* Responsive Design for iPads and Smaller Screens */
-@media (max-width: 768px) {
+@media (max-width: 1115px) {
 
     body{
         overflow: scroll;
@@ -231,6 +240,8 @@ h1 {
         font-size: 0.9rem;
     }
 }
+
+
 
 /* Card Styling */
 .card {
