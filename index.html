@@ -17,6 +17,11 @@
 
     <div class="container">
         <div class="scoreboard">
+                        <!-- New Global Leaderboard Section -->
+                        <h2>Global Leaderboard</h2>
+                        <ol id="global-leaderboard-list">
+                            <!-- JavaScript will dynamically populate this list -->
+                        </ol>
             <h2>Personal Best</h2>
             <ul id="highscore-list"></ul>
             <button id="reset-scores-btn" onclick="resetHighScores()">Reset Scores</button>
@@ -27,20 +32,21 @@
                 <input type="hidden" name="item_name" value="Support the Development of this Game!" />
                 <input type="hidden" name="currency_code" value="USD" />
                 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0"
-                    name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                    name="submit" title="PayPal - The safer, easier way to pay online!"
+                    alt="Donate with PayPal button" />
                 <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-            </form>    
+            </form>
         </div>
 
         <div class="game-content">
             <h1>Memory Game</h1>
             <div class="wrapper">
-                <button id="music-toggle-btn" onclick="toggleMusic()">Mute Music</button>            
+                <button id="music-toggle-btn" onclick="toggleMusic()">Mute Music</button>
                 <div>
                     <label for="volume-slider">Volume Control:</label>
                     <input type="range" id="volume-slider" min="0" max="100" value="10">
                 </div>
-            
+
                 <div>
                     <label for="theme-selector">Choose a Theme:</label>
                     <select id="theme-selector" onchange="restartGame()">
@@ -53,7 +59,7 @@
                     </select>
                 </div>
             </div>
-            
+
 
             <p id="timer">Time: 40:00:000</p>
 

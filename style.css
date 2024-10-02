@@ -559,6 +559,21 @@ body.theme-fruits {
     opacity: 0;
 }
 
+#global-leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#global-leaderboard-list li {
+    background-color: #ddd;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
 
 /* Exciting special effect class */
 .exciting-effect {

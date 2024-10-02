@@ -97,6 +97,82 @@ const themes = {
     ]
 };
 
+// JSONBin API settings for the global leaderboard
+const binId = "66fd21c8acd3cb34a88fe960";  // Replace with your actual bin ID from JSONBin
+const apiKey = "$2a$10$Kpj7AvOoKVBhH6nhSgO7z.EUCFLkZ8QTVvNkXH9ittAHNBwWI2IIG";  // Replace with your actual API Key
+const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
+
+// Function to fetch the global leaderboard from JSONBin
+async function fetchGlobalLeaderboard() {
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "X-Master-Key": apiKey
+            }
+        });
+        const data = await response.json();
+        const leaderboard = data.record.leaderboard;
+
+        // Sort the leaderboard by time (ascending)
+        leaderboard.sort((a, b) => a.time - b.time);
+
+        // Populate the global leaderboard in the HTML
+        const globalLeaderboardList = document.getElementById('global-leaderboard-list');
+        globalLeaderboardList.innerHTML = '';  // Clear the existing list
+
+        leaderboard.slice(0, 3).forEach(entry => {  // Show top 3 scores
+            const listItem = document.createElement('li');
+            listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s`;
+            globalLeaderboardList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Error fetching global leaderboard:', error);
+    }
+}
+
+// Function to add a new score to the global leaderboard and update JSONBin
+async function addNewGlobalScore(playerName, time) {
+    try {
+        // First, get the current global leaderboard
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "X-Master-Key": apiKey
+            }
+        });
+        const data = await response.json();
+        const leaderboard = data.record.leaderboard;
+
+        // Add the new score to the leaderboard
+        leaderboard.push({ playerName, time });
+
+        // Send the updated leaderboard back to JSONBin
+        await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": apiKey
+            },
+            body: JSON.stringify({ leaderboard })
+        });
+
+        // Fetch and display the updated global leaderboard
+        fetchGlobalLeaderboard();
+    } catch (error) {
+        console.error('Error adding new score to global leaderboard:', error);
+    }
+}
+
+// Call fetchGlobalLeaderboard when the page loads to display the leaderboard
+fetchGlobalLeaderboard();
+
+// Example: Adding a new global score after the player finishes the game
+function onGameFinish(playerName, time) {
+    addNewGlobalScore(playerName, time);  // Update the global leaderboard
+}
+
+
 let secretUnlocked = false;
 let swipeSequence = [];
 let tapCount = 0;
@@ -130,10 +206,10 @@ function checkCustomCode(e) {
         customCodeIndex++;
         if (customCodeIndex === customCode.length) {
             unlockSecretTheme();
-            customCodeIndex = 0; 
+            customCodeIndex = 0;
         }
     } else {
-        customCodeIndex = 0; 
+        customCodeIndex = 0;
     }
 }
 
@@ -430,7 +506,7 @@ function createBoard() {
         const cardElement = document.createElement('div');
         cardElement.classList.add('card');
         cardElement.setAttribute('data-name', card.name);
-        
+
         const frontFace = document.createElement('div');
         frontFace.classList.add('front');
 
@@ -566,6 +642,11 @@ function checkForMatch() {
 
 function showWinMessage() {
     const elapsedTime = (Date.now() - startTime) / 1000;
+
+    // Add to global leaderboard
+    const playerName = prompt("Enter your name:");  // Ask for player's name (or customize this)
+    onGameFinish(playerName, elapsedTime);
+
     gameMessage.style.display = 'block';
     gameResult.textContent = `Congratulations! You finished in ${elapsedTime.toFixed(3)} seconds!`;
 
@@ -589,6 +670,7 @@ function showWinMessage() {
     allCards.forEach(card => {
         card.classList.add('winner');  // Ensure the 'winner' class is added
     });
+
 
     saveHighScore(elapsedTime);  // Save the time after the game ends
 }
@@ -723,10 +805,10 @@ function toggleMusic() {
 
     if (backgroundMusic.paused) {
         backgroundMusic.play();
-        musicToggleButton.textContent = "Mute Music"; 
+        musicToggleButton.textContent = "Mute Music";
     } else {
         backgroundMusic.pause();
-        musicToggleButton.textContent = "Play Music";  
+        musicToggleButton.textContent = "Play Music";
     }
 }
 
