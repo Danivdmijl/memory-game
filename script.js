@@ -102,6 +102,13 @@ const binId = "66fd21c8acd3cb34a88fe960";  // Replace with your actual bin ID fr
 const apiKey = "$2a$10$Kpj7AvOoKVBhH6nhSgO7z.EUCFLkZ8QTVvNkXH9ittAHNBwWI2IIG";  // Replace with your actual API Key
 const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
 
+
+function getSelectedTheme() {
+    const themeSelector = document.getElementById('theme-selector');
+    return themeSelector.value;
+}
+
+
 // Function to fetch the global leaderboard from JSONBin
 async function fetchGlobalLeaderboard() {
     try {
@@ -123,7 +130,7 @@ async function fetchGlobalLeaderboard() {
 
         leaderboard.slice(0, 3).forEach((entry, index) => {  // Show top 3 scores
             const listItem = document.createElement('li');
-            listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s`;
+            listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s (Theme: ${entry.theme})`;
 
             // Apply the appropriate class for the top 3
             if (index === 0) {
@@ -142,13 +149,17 @@ async function fetchGlobalLeaderboard() {
 }
 
 
+
 // Function to add a new score to the global leaderboard and update JSONBin
 async function addNewGlobalScore(playerName, time) {
     try {
-        // First, ensure playerName is valid (max 13 characters)
+        // Ensure playerName is valid (max 13 characters)
         if (playerName.length > 13) {
             playerName = playerName.substring(0, 13); // Trim the name to 13 characters
         }
+
+        // Get the selected theme when the game ends
+        const selectedTheme = getSelectedTheme();
 
         // Get the current global leaderboard
         const response = await fetch(apiUrl, {
@@ -160,8 +171,8 @@ async function addNewGlobalScore(playerName, time) {
         const data = await response.json();
         const leaderboard = data.record.leaderboard;
 
-        // Add the new score to the leaderboard
-        leaderboard.push({ playerName, time });
+        // Add the new score, time, and theme to the leaderboard
+        leaderboard.push({ playerName, time, theme: selectedTheme });
 
         // Filter out any existing entries with player names longer than 13 characters
         const filteredLeaderboard = leaderboard.filter(entry => entry.playerName.length <= 13);
@@ -182,6 +193,7 @@ async function addNewGlobalScore(playerName, time) {
         console.error('Error adding new score to global leaderboard:', error);
     }
 }
+
 
 
 // Call fetchGlobalLeaderboard when the page loads to display the leaderboard
@@ -874,5 +886,44 @@ function toggleMusic() {
         musicToggleButton.textContent = "Play Music";
     }
 }
+
+async function removeAllScores() {
+    try {
+        // Fetch the current global leaderboard from JSONBin
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "X-Master-Key": apiKey
+            }
+        });
+        const data = await response.json();
+
+        // Set the leaderboard to an empty array
+        const updatedData = {
+            leaderboard: [],  // Clear the leaderboard
+            resetPerformed: data.record.resetPerformed || false  // Keep the resetPerformed flag as is
+        };
+
+        // Send the updated empty leaderboard back to JSONBin
+        await fetch(apiUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": apiKey
+            },
+            body: JSON.stringify(updatedData)
+        });
+
+        console.log('All scores have been removed from the leaderboard.');
+        alert('All scores have been successfully removed.');
+    } catch (error) {
+        console.error('Error removing all scores:', error);
+    }
+}
+
+// Call this function once to remove all scores
+// removeAllScores();
+
+
 
 createBoard();
