@@ -794,7 +794,7 @@ function showWinMessage() {
     saveHighScore(elapsedTime);  // Save the time after the game ends
 
     // Check if time is under 23 seconds to unlock Eredivisie theme
-    if (elapsedTime < 40) {
+    if (elapsedTime < 23) {
         unlockEredivisieTheme();  // Unlock the Eredivisie theme if the player finishes in under 23 seconds
     }
 }
