@@ -59,6 +59,26 @@ const themes = {
         { name: '🪕', id: 13 }, { name: '🪕', id: 14 },
         { name: '🎤', id: 15 }, { name: '🎤', id: 16 }
     ],
+
+    eredivisie: [
+        { name: '🏆', id: 1, img: 'images/ajax.png' },
+        { name: '🏆', id: 2, img: 'images/ajax.png' },
+        { name: '⚽', id: 3, img: 'images/pec.png' },
+        { name: '⚽', id: 4, img: 'images/pec.png' },
+        { name: '🥅', id: 5, img: 'images/psv.png' },
+        { name: '🥅', id: 6, img: 'images/psv.png' },
+        { name: '🏟️', id: 7, img: 'images/utrecht.png' },
+        { name: '🏟️', id: 8, img: 'images/utrecht.png' },
+        { name: '🎽', id: 9, img: 'images/az.png' },
+        { name: '🎽', id: 10, img: 'images/az.png' },
+        { name: '🧤', id: 11, img: 'images/nec.png' },
+        { name: '🧤', id: 12, img: 'images/nec.png' },
+        { name: '🎯', id: 13, img: 'images/heerenveen.png' },
+        { name: '🎯', id: 14, img: 'images/heerenveen.png' },
+        { name: '🎧', id: 15, img: 'images/twente.png' },
+        { name: '🎧', id: 16, img: 'images/twente.png' }
+    ],
+
     secret: [
         { name: '🦄', id: 1, img: 'images/bowser.png' },
         { name: '🦄', id: 2, img: 'images/bowser.png' },
@@ -138,7 +158,10 @@ async function fetchGlobalLeaderboard() {
                 listItem.classList.add('gold');     // Second place
             } else if (index === 2) {
                 listItem.classList.add('silver');   // Third place
+            } else if (index === 3) {
+                listItem.classList.add('loser');   // Third place
             }
+            
 
             globalLeaderboardList.appendChild(listItem);
         });
@@ -267,6 +290,26 @@ function checkIfSecretThemeUnlocked() {
         resetThemesBtn.style.display = 'block';
     }
 }
+
+function unlockEredivisieTheme() {
+    if (!localStorage.getItem('eredivisieThemeUnlocked')) {
+        alert("Congratulations! You’ve unlocked the Eredivisie Clubs Theme! ⚽");
+
+        const unlockSound = new Audio('sounds/unlocked2.wav');
+        unlockSound.play();
+
+        // Add Eredivisie theme option to the theme selector
+        const themeSelector = document.getElementById('theme-selector');
+        const eredivisieOption = document.createElement('option');
+        eredivisieOption.value = 'eredivisie';
+        eredivisieOption.textContent = 'Eredivisie Clubs';
+        themeSelector.appendChild(eredivisieOption);
+
+        localStorage.setItem('eredivisieThemeUnlocked', 'true');
+        document.getElementById('reset-themes-btn').style.display = 'block';
+    }
+}
+
 
 function checkCustomCode(e) {
     if (e.keyCode === customCode[customCodeIndex]) {
@@ -503,10 +546,11 @@ function createGlowingParticles(colors = ['#ffeb3b', '#f57c00', '#29b6f6']) {
 
 
 function resetThemes() {
-    if (confirm("Are you sure you want to reset the themes? You can always unlock them again..")) {
+    if (confirm("Are you sure you want to reset the themes? You can always unlock them again.")) {
         localStorage.removeItem('selectedTheme');  // Remove the saved theme
         localStorage.removeItem('secretThemeUnlocked');
         localStorage.removeItem('pokemonThemeUnlocked');
+        localStorage.removeItem('eredivisieThemeUnlocked');  // Reset Eredivisie theme
         
         // Reset the theme selector to 'animals' (default)
         const themeSelector = document.getElementById('theme-selector');
@@ -516,6 +560,7 @@ function resetThemes() {
         alert("Themes have been reset to default (Animals).");
     }
 }
+
 
 
 document.addEventListener('keydown', checkCustomCode);
@@ -580,18 +625,16 @@ function createBoard() {
         const frontFace = document.createElement('div');
         frontFace.classList.add('front');
 
-        // Check if the current theme is 'secret'
-        if (selectedTheme === 'secret' || selectedTheme === 'pokemon') {
-            // Render an image for the secret or Pokémon theme
+        if (selectedTheme === 'secret' || selectedTheme === 'pokemon' || selectedTheme === 'eredivisie') {
             const imgElement = document.createElement('img');
             imgElement.src = card.img; // Use the 'img' path from the theme
             imgElement.alt = card.name;
             imgElement.classList.add('card-image'); // Add a class for styling
             frontFace.appendChild(imgElement);
         } else {
-            // Render text content (emoji) for other themes
             frontFace.textContent = card.name;
         }
+        
 
         const backFace = document.createElement('div');
         backFace.classList.add('back');
@@ -715,7 +758,7 @@ function showWinMessage() {
 
     // Add to global leaderboard
     let playerName = prompt("Enter your name (max 13 characters):");
-    
+
     // Validate the player name length
     if (playerName.length > 13) {
         alert("Name is too long! It will be trimmed to 13 characters.");
@@ -749,7 +792,36 @@ function showWinMessage() {
     });
 
     saveHighScore(elapsedTime);  // Save the time after the game ends
+
+    // Check if time is under 23 seconds to unlock Eredivisie theme
+    if (elapsedTime < 40) {
+        unlockEredivisieTheme();  // Unlock the Eredivisie theme if the player finishes in under 23 seconds
+    }
 }
+
+function checkIfEredivisieThemeUnlocked() {
+    const resetThemesBtn = document.getElementById('reset-themes-btn');
+    if (localStorage.getItem('eredivisieThemeUnlocked') === 'true') {
+        const themeSelector = document.getElementById('theme-selector');
+        if (!document.querySelector('option[value="eredivisie"]')) {
+            const eredivisieOption = document.createElement('option');
+            eredivisieOption.value = 'eredivisie';
+            eredivisieOption.textContent = 'Eredivisie Clubs';
+            themeSelector.appendChild(eredivisieOption);
+        }
+        resetThemesBtn.style.display = 'block';
+    }
+}
+
+checkIfEredivisieThemeUnlocked();
+
+window.addEventListener('DOMContentLoaded', () => {
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.value = getSelectedTheme();  // Set the dropdown to the saved theme
+    checkIfEredivisieThemeUnlocked();  // Check if the Eredivisie theme is unlocked
+    createBoard();  // Create the game board with the selected theme
+});
+
 
 
 function gameOver() {
