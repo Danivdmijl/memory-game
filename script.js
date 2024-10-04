@@ -104,8 +104,7 @@ const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
 
 
 function getSelectedTheme() {
-    const themeSelector = document.getElementById('theme-selector');
-    return themeSelector.value;
+    return localStorage.getItem('selectedTheme') || 'animals';
 }
 
 
@@ -504,39 +503,42 @@ function createGlowingParticles(colors = ['#ffeb3b', '#f57c00', '#29b6f6']) {
 
 
 function resetThemes() {
-    if (confirm("Are you sure you want to reset unlocked themes?")) {
-        // Remove the unlocked theme status from localStorage
+    if (confirm("Are you sure you want to reset the themes? You can always unlock them again..")) {
+        localStorage.removeItem('selectedTheme');  // Remove the saved theme
         localStorage.removeItem('secretThemeUnlocked');
-        localStorage.removeItem('pokemonThemeUnlocked'); // Add this for Pokemon
-
-        // Remove the secret themes from the theme selector
-        const secretOption = document.querySelector('option[value="secret"]');
-        if (secretOption) secretOption.remove();
-
-        const pokemonOption = document.querySelector('option[value="pokemon"]'); // Add this for Pokemon
-        if (pokemonOption) pokemonOption.remove();
-
-        // Hide the "Reset Themes" button after resetting themes
-        document.getElementById('reset-themes-btn').style.display = 'none';
-
-        // Reset flags
-        secretUnlocked = false;
-
-        resetUnlockInputs();
-
-        alert("All secret themes have been reset. You can unlock them again.");
+        localStorage.removeItem('pokemonThemeUnlocked');
+        
+        // Reset the theme selector to 'animals' (default)
+        const themeSelector = document.getElementById('theme-selector');
+        themeSelector.value = 'animals';
+        
+        restartGame();  // Restart the game with the default theme
+        alert("Themes have been reset to default (Animals).");
     }
 }
+
 
 document.addEventListener('keydown', checkCustomCode);
 document.addEventListener('keydown', checkPokemonCode);
 
 checkIfSecretThemeUnlocked();
 
-function getSelectedTheme() {
-    const themeSelector = document.getElementById('theme-selector');
-    return themeSelector.value;
+function setSelectedTheme(theme) {
+    localStorage.setItem('selectedTheme', theme);
 }
+
+function handleThemeChange() {
+    const themeSelector = document.getElementById('theme-selector');
+    const selectedTheme = themeSelector.value;
+    setSelectedTheme(selectedTheme);  // Save the selected theme
+    restartGame();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const themeSelector = document.getElementById('theme-selector');
+    themeSelector.value = getSelectedTheme();  // Set the dropdown to the saved theme
+    createBoard();  // Create the game board with the selected theme
+});
 
 function getCardArrayForTheme() {
     const selectedTheme = getSelectedTheme();
