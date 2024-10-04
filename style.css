@@ -56,7 +56,7 @@ li {
 li.diamond {
     background-color: #b9f2ff; /* Light blue diamond color */
     color: #1e1e1e; /* Darker text for contrast */
-    border: 2px solid #b9f2ff;
+    border: 5px solid #b9f2ff;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(185, 242, 255, 0.8);
 }
