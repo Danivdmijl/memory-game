@@ -21,15 +21,15 @@ body {
 
 .scoreboard {
     background-color: #333;
-    padding: 10px;  /* Reduce padding */
+    padding: 10px;
     border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-    flex-basis: 20%;  /* Reduce width to make it smaller */
+    flex-basis: 20%;
     position: absolute;
-    top: 159px;  /* Keep the position as it is */
-    left: 270px;  /* Ensure the left alignment remains the same */
-    max-height: 60vh;  /* Prevent it from taking up too much height */
-    overflow-y: auto;  /* Add scroll if needed */
+    top: 159px;
+    left: 270px;
+    min-height: 540px;
+    overflow-y: auto; /* Allow scrolling only when necessary */
 }
 
 .scoreboard h2 {
@@ -64,6 +64,9 @@ li.gold {
     font-weight: bold;
     padding: 0.2rem;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
@@ -74,6 +77,9 @@ li.silver {
     font-weight: bold;
     padding: 0.2rem;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
@@ -84,6 +90,9 @@ li.bronze {
     font-weight: bold;
     padding: 0.2rem;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
@@ -631,7 +640,7 @@ body.theme-fruits {
 #global-leaderboard-list {
     list-style: none;
     padding: 0;
-    margin-top: 20px;
+    margin-top: 20px;;
 }
 
 #global-leaderboard-list li {
