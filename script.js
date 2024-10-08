@@ -127,8 +127,20 @@ function getSelectedTheme() {
     return localStorage.getItem('selectedTheme') || 'animals';
 }
 
+function getDeviceType() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    
+    // Check if the device is a mobile device
+    if (/android/i.test(userAgent)) {
+        return 'mobile';
+    }
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        return 'mobile';
+    }
+    return 'desktop';
+}
 
-// Function to fetch the global leaderboard from JSONBin
+
 async function fetchGlobalLeaderboard() {
     try {
         const response = await fetch(apiUrl, {
@@ -143,27 +155,49 @@ async function fetchGlobalLeaderboard() {
         // Sort the leaderboard by time (ascending)
         leaderboard.sort((a, b) => a.time - b.time);
 
-        // Populate the global leaderboard in the HTML
-        const globalLeaderboardList = document.getElementById('global-leaderboard-list');
-        globalLeaderboardList.innerHTML = '';  // Clear the existing list
+        // Filter by device type, defaulting to 'desktop' for old entries
+        const mobileScores = leaderboard.filter(entry => entry.deviceType === 'mobile');
+        const desktopScores = leaderboard.filter(entry => entry.deviceType === 'desktop' || !entry.deviceType);  // Default to desktop if deviceType is missing
 
-        leaderboard.slice(0, 3).forEach((entry, index) => {  // Show top 3 scores
+        // Populate the global leaderboard in the HTML for both device types
+        const mobileLeaderboardList = document.getElementById('global-mobile-leaderboard-list');
+        const desktopLeaderboardList = document.getElementById('global-desktop-leaderboard-list');
+
+        mobileLeaderboardList.innerHTML = '';  // Clear the existing mobile list
+        desktopLeaderboardList.innerHTML = '';  // Clear the existing desktop list
+
+        // Show top 3 mobile scores
+        mobileScores.slice(0, 3).forEach((entry, index) => {
             const listItem = document.createElement('li');
             listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s (Theme: ${entry.theme})`;
 
             // Apply the appropriate class for the top 3
             if (index === 0) {
-                listItem.classList.add('diamond');  // First place
+                listItem.classList.add('gold');  // First place (Gold)
             } else if (index === 1) {
-                listItem.classList.add('gold');     // Second place
+                listItem.classList.add('silver');  // Second place (Silver)
             } else if (index === 2) {
-                listItem.classList.add('silver');   // Third place
-            } else if (index === 3) {
-                listItem.classList.add('loser');   // Third place
+                listItem.classList.add('bronze');  // Third place (Bronze)
             }
-            
 
-            globalLeaderboardList.appendChild(listItem);
+            mobileLeaderboardList.appendChild(listItem);
+        });
+
+        // Show top 3 desktop scores, including old entries without a deviceType
+        desktopScores.slice(0, 3).forEach((entry, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${entry.playerName} - ${entry.time.toFixed(2)}s (Theme: ${entry.theme})`;
+
+            // Apply the appropriate class for the top 3
+            if (index === 0) {
+                listItem.classList.add('gold');  // First place (Gold)
+            } else if (index === 1) {
+                listItem.classList.add('silver');  // Second place (Silver)
+            } else if (index === 2) {
+                listItem.classList.add('bronze');  // Third place (Bronze)
+            }
+
+            desktopLeaderboardList.appendChild(listItem);
         });
     } catch (error) {
         console.error('Error fetching global leaderboard:', error);
@@ -172,18 +206,13 @@ async function fetchGlobalLeaderboard() {
 
 
 
-// Function to add a new score to the global leaderboard and update JSONBin
+
+
 async function addNewGlobalScore(playerName, time) {
     try {
-        // Ensure playerName is valid (max 13 characters)
-        if (playerName.length > 13) {
-            playerName = playerName.substring(0, 13); // Trim the name to 13 characters
-        }
-
-        // Get the selected theme when the game ends
-        const selectedTheme = getSelectedTheme();
-
-        // Get the current global leaderboard
+        const deviceType = getDeviceType(); // Get the device type
+        const selectedTheme = getSelectedTheme(); // Existing function for theme
+        
         const response = await fetch(apiUrl, {
             method: "GET",
             headers: {
@@ -192,29 +221,27 @@ async function addNewGlobalScore(playerName, time) {
         });
         const data = await response.json();
         const leaderboard = data.record.leaderboard;
-
-        // Add the new score, time, and theme to the leaderboard
-        leaderboard.push({ playerName, time, theme: selectedTheme });
-
-        // Filter out any existing entries with player names longer than 13 characters
-        const filteredLeaderboard = leaderboard.filter(entry => entry.playerName.length <= 13);
-
-        // Send the updated leaderboard back to JSONBin
+        
+        // Add the new score with device type
+        leaderboard.push({ playerName, time, theme: selectedTheme, deviceType });
+        
+        // Send the updated leaderboard back to JSONBin (or your backend)
         await fetch(apiUrl, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "X-Master-Key": apiKey
             },
-            body: JSON.stringify({ leaderboard: filteredLeaderboard })
+            body: JSON.stringify({ leaderboard })
         });
-
-        // Fetch and display the updated global leaderboard
+        
+        // Fetch and display the updated leaderboard
         fetchGlobalLeaderboard();
     } catch (error) {
         console.error('Error adding new score to global leaderboard:', error);
     }
 }
+
 
 
 
@@ -793,8 +820,8 @@ function showWinMessage() {
 
     saveHighScore(elapsedTime);  // Save the time after the game ends
 
-    // Check if time is under 23 seconds to unlock Eredivisie theme
-    if (elapsedTime < 23) {
+    // Check if time is under 25 seconds to unlock Eredivisie theme
+    if (elapsedTime < 25) {
         unlockEredivisieTheme();  // Unlock the Eredivisie theme if the player finishes in under 23 seconds
     }
 }
@@ -864,6 +891,7 @@ function saveHighScore(elapsedTime) {
 }
 
 // Fix: Rendering high scores
+// Fix: Rendering personal best scores (old styling)
 function renderHighScores() {
     // Get the high scores from localStorage
     const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
@@ -871,23 +899,24 @@ function renderHighScores() {
     // Clear the current high score list display
     highscoreList.innerHTML = '';
 
-    // Loop through each score and display it in the list
+    // Loop through each score and display it in the list with old styling
     highScores.forEach((score, index) => {
         const li = document.createElement('li');
         li.textContent = `${score.toFixed(3)} seconds`;
 
-        // Apply classes for first, second, and third places
+        // Apply old classes for first, second, and third places
         if (index === 0) {
-            li.classList.add('gold');
+            li.classList.add('personal-diamond');  // Old diamond styling for first place
         } else if (index === 1) {
-            li.classList.add('silver');
+            li.classList.add('personal-gold');  // Old gold styling for second place
         } else if (index === 2) {
-            li.classList.add('bronze');
+            li.classList.add('personal-silver');  // Old silver styling for third place
         }
 
         highscoreList.appendChild(li);
     });
 }
+
 
 function restartGame() {
     clearInterval(timerInterval);
